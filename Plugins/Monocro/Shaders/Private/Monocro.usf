@@ -1,0 +1,21 @@
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Private/SceneTexturesCommon.ush"
+#include "/Engine/Private/DeferredShadingCommon.ush"
+
+float Weight;
+
+void MainPS(
+	FScreenVertexOutput Input,
+	out float4 OutColor : SV_Target0)
+{
+    float2 BufferUV = Input.UV;
+    float2 ClampedUV = clamp(BufferUV, View.BufferBilinearUVMinMax.xy, View.BufferBilinearUVMinMax.zw);
+
+    float3 SceneColor = CalcSceneColor(ClampedUV);
+	
+    float3 Monocro = SceneColor.r * 0.3f + SceneColor.g * 0.6f + SceneColor.b * 0.1f;
+
+    float3 Output = lerp(SceneColor, Monocro, Weight);
+
+    OutColor = float4(Output, 1.0);
+}
